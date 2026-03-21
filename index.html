@@ -143,15 +143,56 @@
 
         /* ── Timeline ── */
         .timeline-dot {
-            width: 10px; height: 10px; border-radius: 50%;
-            background: rgba(201,191,255,0.7);
-            box-shadow: 0 0 12px rgba(201,191,255,0.5);
+            width: 12px; height: 12px; border-radius: 50%;
+            background: rgba(201,191,255,0.8);
+            box-shadow: 0 0 16px rgba(201,191,255,0.7), 0 0 32px rgba(201,191,255,0.3);
             flex-shrink: 0; margin-top: 5px;
+            animation: dotPulse 3s ease-in-out infinite;
+        }
+        @keyframes dotPulse {
+            0%,100% { transform: scale(1);   box-shadow: 0 0 16px rgba(201,191,255,0.7), 0 0 32px rgba(201,191,255,0.3); }
+            50%     { transform: scale(1.25); box-shadow: 0 0 24px rgba(201,191,255,0.9), 0 0 48px rgba(201,191,255,0.4); }
         }
         .timeline-line {
             width: 1px; height: 52px;
-            background: linear-gradient(to bottom, rgba(201,191,255,0.2), rgba(201,191,255,0.04));
+            background: linear-gradient(to bottom, rgba(201,191,255,0.35), rgba(201,191,255,0.06));
             margin: 3px auto;
+        }
+
+        /* ── Magical floating shimmer on glass cards ── */
+        .glass-card {
+            position: relative;
+        }
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg,
+                rgba(255,255,255,0.04) 0%,
+                transparent 50%,
+                rgba(201,191,255,0.03) 100%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .glass-card:hover::after { opacity: 1; }
+
+        /* ── Animated gradient border on quote cards on hover ── */
+        .q-violet:hover, .q-cyan:hover, .q-rose:hover, .q-gold:hover, .q-teal:hover {
+            border-color: transparent !important;
+            background-clip: padding-box;
+        }
+
+        /* ── Floating orbs behind sections ── */
+        .magic-orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(80px); pointer-events: none; z-index: -1;
+            animation: orbFloat 8s ease-in-out infinite alternate;
+        }
+        @keyframes orbFloat {
+            from { transform: translateY(0px) scale(1); }
+            to   { transform: translateY(-20px) scale(1.08); }
         }
 
         /* ── Mobile nav ── */
@@ -217,7 +258,9 @@
         </section>
 
         <!-- ── Evening + Vibe cards ── -->
-        <section class="mb-10 sm:mb-20">
+        <section class="mb-10 sm:mb-20 relative">
+            <div class="magic-orb w-64 h-64 bg-violet-500/10 top-0 left-1/4" style="animation-delay:0s"></div>
+            <div class="magic-orb w-48 h-48 bg-cyan-400/10 bottom-10 right-1/4" style="animation-delay:3s"></div>
 
             <!-- Centered magical header -->
             <div class="text-center mb-10 sm:mb-14 relative">
@@ -234,19 +277,19 @@
                 </h3>
             </div>
 
-            <div class="flex flex-col lg:flex-row gap-10 lg:gap-12 items-start">
+            <div class="flex flex-col items-center gap-10">
 
-                <!-- Timeline — centered on its own -->
-                <div class="w-full lg:flex-1 flex justify-center">
-                    <div class="flex gap-5 sm:gap-6 max-w-sm w-full">
-                        <div class="flex flex-col items-center pt-1">
+                <!-- Timeline — fully centered -->
+                <div class="w-full flex justify-center">
+                    <div class="flex gap-6 max-w-md w-full">
+                        <div class="flex flex-col items-center pt-1 flex-shrink-0">
                             <div class="timeline-dot"></div>
                             <div class="timeline-line"></div>
-                            <div class="timeline-dot" style="background:rgba(166,230,255,0.7);box-shadow:0 0 12px rgba(166,230,255,0.4)"></div>
+                            <div class="timeline-dot" style="background:rgba(166,230,255,0.8);box-shadow:0 0 14px rgba(166,230,255,0.5)"></div>
                             <div class="timeline-line"></div>
-                            <div class="timeline-dot" style="background:rgba(226,181,255,0.7);box-shadow:0 0 12px rgba(226,181,255,0.4)"></div>
+                            <div class="timeline-dot" style="background:rgba(226,181,255,0.8);box-shadow:0 0 14px rgba(226,181,255,0.5)"></div>
                             <div class="timeline-line"></div>
-                            <div class="timeline-dot" style="background:rgba(255,210,80,0.7);box-shadow:0 0 12px rgba(255,210,80,0.4)"></div>
+                            <div class="timeline-dot" style="background:rgba(255,210,80,0.8);box-shadow:0 0 14px rgba(255,210,80,0.5)"></div>
                         </div>
                         <div class="flex flex-col gap-8 sm:gap-10">
                             <div>
@@ -269,37 +312,47 @@
                     </div>
                 </div>
 
-                <!-- Vibe cards -->
-                <div class="w-full lg:flex-1 grid grid-cols-2 gap-3 sm:gap-4">
-                    <div class="vibe-card glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col gap-2 sm:gap-3">
-                        <span class="text-xl sm:text-2xl">🎵</span>
+                <!-- Vibe cards — centered below timeline -->
+                <div class="w-full grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
+                    <div class="vibe-card glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col gap-2 sm:gap-3 items-center text-center">
+                        <span class="text-2xl sm:text-3xl">🎵</span>
                         <p class="font-headline text-sm sm:text-base font-semibold text-on-surface">Good Music</p>
-                        <p class="text-on-surface-variant text-xs sm:text-sm font-light">A carefully curated soundscape for the evening.</p>
+                        <p class="text-on-surface-variant text-xs font-light">A curated soundscape for the night.</p>
                     </div>
-                    <div class="vibe-card glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col gap-2 sm:gap-3">
-                        <span class="text-xl sm:text-2xl">🥤</span>
-                        <p class="font-headline text-sm sm:text-base font-semibold text-on-surface">Softdrinks & Snacks</p>
-                        <p class="text-on-surface-variant text-xs sm:text-sm font-light">Because no HJB night is complete without good food.</p>
+                    <div class="vibe-card glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col gap-2 sm:gap-3 items-center text-center">
+                        <span class="text-2xl sm:text-3xl">🥤</span>
+                        <p class="font-headline text-sm sm:text-base font-semibold text-on-surface">Softdrinks</p>
+                        <p class="text-on-surface-variant text-xs font-light">No HJB night is complete without it.</p>
                     </div>
-                    <div class="vibe-card glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col gap-2 sm:gap-3">
-                        <span class="text-xl sm:text-2xl">🌙</span>
+                    <div class="vibe-card glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col gap-2 sm:gap-3 items-center text-center">
+                        <span class="text-2xl sm:text-3xl">🌙</span>
                         <p class="font-headline text-sm sm:text-base font-semibold text-on-surface">Midnight Feels</p>
-                        <p class="text-on-surface-variant text-xs sm:text-sm font-light">The kind of night you'll talk about for years.</p>
+                        <p class="text-on-surface-variant text-xs font-light">The kind of night you'll talk about for years.</p>
                     </div>
-                    <div class="vibe-card glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col gap-2 sm:gap-3">
-                        <span class="text-xl sm:text-2xl">🤝</span>
+                    <div class="vibe-card glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col gap-2 sm:gap-3 items-center text-center">
+                        <span class="text-2xl sm:text-3xl">🤝</span>
                         <p class="font-headline text-sm sm:text-base font-semibold text-on-surface">Old Friends</p>
-                        <p class="text-on-surface-variant text-xs sm:text-sm font-light">Everyone who made this hall feel like home.</p>
+                        <p class="text-on-surface-variant text-xs font-light">Everyone who made this hall home.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- ── Quotes ── -->
-        <section class="mb-10 sm:mb-20" id="quotes">
-            <div class="mb-8 sm:mb-14">
-                <h3 class="font-headline text-3xl sm:text-4xl font-bold mb-3 sm:mb-4">Woven in Starlight</h3>
-                <p class="text-on-surface-variant text-sm sm:text-base">Three years, different halls, one bond — captured in words.</p>
+        <section class="mb-10 sm:mb-20 relative" id="quotes">
+            <div class="magic-orb w-72 h-72 bg-purple-500/8 top-20 right-0" style="animation-delay:2s"></div>
+            <div class="magic-orb w-56 h-56 bg-blue-400/8 bottom-0 left-0" style="animation-delay:5s"></div>
+            <div class="text-center mb-10 sm:mb-14 relative">
+                <div class="absolute -z-10 w-[300px] h-[120px] bg-primary/10 blur-[60px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                <span class="font-label text-[11px] sm:text-xs uppercase text-primary/80 mb-3 block" style="letter-spacing:0.5em;">✦ &nbsp; Reflections &nbsp; ✦</span>
+                <h3 class="font-headline text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight"
+                    style="background: linear-gradient(135deg, #e2b5ff 0%, #c9bfff 40%, #a6e6ff 100%);
+                           -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                           background-clip: text;
+                           filter: drop-shadow(0 0 20px rgba(201,191,255,0.35));">
+                    Woven in Starlight
+                </h3>
+                <p class="text-on-surface-variant text-sm sm:text-base mt-4">Three years, different halls, one bond — captured in words.</p>
             </div>
 
             <!-- Single column on mobile, bento on desktop -->
